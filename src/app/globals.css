@@ -17,11 +17,15 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-allroundgothic-semi);
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+.default-font {
+  font-family: 'Courier New', Courier, monospace !important;
 }
