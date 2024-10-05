@@ -1,7 +1,7 @@
 'use client';
 
 import { FC, useEffect, useState } from 'react';
-import { AnimationControls, motion } from 'framer-motion';
+import { AnimatePresence, AnimationControls, motion } from 'framer-motion';
 import useSound from 'use-sound';
 import { List } from './components/List';
 import { PlayButton } from './components/Button/PlayButton';
@@ -44,34 +44,56 @@ const StopPlayingSection: FC<StopPlayingSectionProps> = ({
   );
 };
 
+const WelcomeMessage: FC = () => (
+  <motion.div
+    className="flex justify-center items-center"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0, y: -100 }}
+    transition={{ duration: 0.5 }}
+  >
+    <h1 className="text-4xl font-bold">Welcome at Coffiii</h1>
+  </motion.div>
+);
+
 export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(true);
 
-  const [play] = useSound(Cafe1Sound);
+  const [play, { stop }] = useSound(Cafe1Sound);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowWelcome(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const startPlaying = () => {
     setIsPlaying(true);
     setIsStarted(true);
+    play();
   };
 
   const stopPlaying = () => {
     setIsPlaying(false);
+    stop();
   };
 
-  useEffect(() => {
-    if (isPlaying) {
-      play();
-    }
-  }, [isPlaying]);
-
   const DisplayCurrentButton = () => (
-    <>
+    <motion.div
+      className="min-w-96 mt-2 flex flex-col gap-8 row-start-2 items-center sm:items-start"
+      initial={{ opacity: 0, y: 100 }}
+      animate={{ opacity: 1, y: 20 }}
+      transition={{ duration: 0.5 }}
+    >
       <PlayButton isPlaying={isPlaying} startPlaying={startPlaying} />
       {isStarted && (
         <StopPlayingSection isPlaying={isPlaying} stopPlaying={stopPlaying} />
       )}
-    </>
+    </motion.div>
   );
 
   return (
@@ -81,8 +103,14 @@ export default function Home() {
           <h1 className="text-3xl">Coffiii</h1>
           <h2 className="text-xl mb-5">minimalistic cafe.fm</h2>
         </div>
-        <div className="min-w-96 mt-2 flex flex-col gap-8 row-start-2 items-center sm:items-start">
-          <DisplayCurrentButton />
+        <div>
+          <AnimatePresence>
+            {showWelcome ? (
+              <WelcomeMessage key="welcome" />
+            ) : (
+              <DisplayCurrentButton key="button" />
+            )}
+          </AnimatePresence>
         </div>
       </main>
       <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
