@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  Dispatch,
-  FC,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { FC, useEffect, useState } from 'react';
 import { AnimatePresence, AnimationControls, motion } from 'framer-motion';
 import { List } from './components/List';
 import { PlayButton } from './components/Button/PlayButton';
@@ -120,9 +113,9 @@ export default function Home() {
   );
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="relative grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <div className="absolute top-20">
+        <div className="absolute top-20 left-1/2 -translate-x-1/2">
           <h1 className="text-3xl">Coffiii</h1>
           <h2 className="text-xl mb-5">minimalistic cafe.fm</h2>
         </div>
