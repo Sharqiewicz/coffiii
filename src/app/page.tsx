@@ -1,23 +1,30 @@
 'use client';
 
-import { FC, useEffect, useState } from 'react';
+import {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { AnimatePresence, AnimationControls, motion } from 'framer-motion';
-import useSound from 'use-sound';
 import { List } from './components/List';
 import { PlayButton } from './components/Button/PlayButton';
 import { PauseButton } from './components/Button/PauseButton';
-import { BackwardButton } from './components/Button/BackwardButton';
 
 import Cafe1Sound from '../public/sounds/cafe-1.mp3';
 
 interface StopPlayingSectionProps {
   isPlaying: boolean;
   stopPlaying: () => void;
+  setCurrentSound: (sound: HTMLAudioElement) => void;
 }
 
 const StopPlayingSection: FC<StopPlayingSectionProps> = ({
   isPlaying,
   stopPlaying,
+  setCurrentSound,
 }) => {
   const commonAnimate = isPlaying
     ? {}
@@ -25,7 +32,7 @@ const StopPlayingSection: FC<StopPlayingSectionProps> = ({
 
   return (
     <motion.section
-      className="flex gap-4"
+      className="flex gap-4 flex-wrap w-max justify-center items-center"
       animate={
         isPlaying
           ? { y: -100, transition: { duration: 0.8 }, scale: [0, 1] }
@@ -33,13 +40,12 @@ const StopPlayingSection: FC<StopPlayingSectionProps> = ({
       }
     >
       <motion.div animate={commonAnimate}>
-        <List />
+        <List setCurrentSound={setCurrentSound} />
       </motion.div>
       <PauseButton
         animate={commonAnimate as AnimationControls}
         stopPlaying={stopPlaying}
       />
-      <BackwardButton animate={commonAnimate as AnimationControls} />
     </motion.section>
   );
 };
@@ -58,10 +64,10 @@ const WelcomeMessage: FC = () => (
 
 export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isStarted, setIsStarted] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [isStarted, setIsStarted] = useState(false); // todo: remove it
+  const [showWelcome, setShowWelcome] = useState(true); // todo: remove it
 
-  const [play, { stop }] = useSound(Cafe1Sound);
+  const [currentSound, setCurrentSound] = useState(new Audio(Cafe1Sound));
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -71,27 +77,44 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    if (currentSound) {
+      currentSound.loop = true;
+      currentSound.play();
+    }
+  }, [currentSound]);
+
   const startPlaying = () => {
     setIsPlaying(true);
     setIsStarted(true);
-    play();
+    currentSound.loop = true;
+    currentSound.play();
   };
 
   const stopPlaying = () => {
     setIsPlaying(false);
-    stop();
+    currentSound.pause();
+  };
+
+  const handleSetCurrentSound = (sound: HTMLAudioElement) => {
+    currentSound.pause();
+    setCurrentSound(sound);
   };
 
   const DisplayCurrentButton = () => (
     <motion.div
-      className="min-w-96 mt-2 flex flex-col gap-8 row-start-2 items-center sm:items-start"
+      className="mt-2 flex flex-col gap-8 row-start-2 items-center sm:items-start"
       initial={{ opacity: 0, y: 100 }}
       animate={{ opacity: 1, y: 20 }}
       transition={{ duration: 0.5 }}
     >
       <PlayButton isPlaying={isPlaying} startPlaying={startPlaying} />
       {isStarted && (
-        <StopPlayingSection isPlaying={isPlaying} stopPlaying={stopPlaying} />
+        <StopPlayingSection
+          isPlaying={isPlaying}
+          stopPlaying={stopPlaying}
+          setCurrentSound={handleSetCurrentSound}
+        />
       )}
     </motion.div>
   );

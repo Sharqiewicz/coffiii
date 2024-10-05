@@ -4,6 +4,7 @@ import { BackwardIcon } from '@heroicons/react/24/solid';
 
 interface StopPlayingSectionProps {
   animate: AnimationControls;
+  onClick: () => void;
 }
 
 export const BackwardButton: FC<StopPlayingSectionProps> = ({ animate }) => (

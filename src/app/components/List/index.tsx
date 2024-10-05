@@ -2,6 +2,12 @@ import { useState } from 'react';
 import { motion, Variants } from 'framer-motion';
 import { ListBulletIcon } from '@heroicons/react/24/solid';
 
+import Cafe1Sound from '../../../public/sounds/cafe-1.mp3';
+import Cafe2Sound from '../../../public/sounds/cafe-2.mp3';
+import Cafe3Sound from '../../../public/sounds/cafe-3.mp3';
+import Cafe4Sound from '../../../public/sounds/cafe-4.mp3';
+import Cafe5Sound from '../../../public/sounds/cafe-5.mp3';
+
 const itemVariants: Variants = {
   open: {
     opacity: 1,
@@ -11,9 +17,34 @@ const itemVariants: Variants = {
   closed: { opacity: 0, y: 20, transition: { duration: 0.2 } },
 };
 
-const countryFlags = ['🇮🇹', '🇵🇹', '🇵🇱', '🇩🇪', '🇫🇷'];
+const SOUNDS = [
+  {
+    icon: '🇵🇱',
+    sound: Cafe1Sound,
+  },
+  {
+    icon: '🇸🇪',
+    sound: Cafe2Sound,
+  },
+  {
+    icon: '🇫🇷',
+    sound: Cafe3Sound,
+  },
+  {
+    icon: '🇮🇹',
+    sound: Cafe4Sound,
+  },
+  {
+    icon: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+    sound: Cafe5Sound,
+  },
+];
 
-export function List() {
+interface ListProps {
+  setCurrentSound: (sound: HTMLAudioElement) => void;
+}
+
+export function List({ setCurrentSound }: ListProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -49,14 +80,17 @@ export function List() {
         }}
         style={{ pointerEvents: isOpen ? 'auto' : 'none' }}
       >
-        {countryFlags.map((flag, index) => (
+        {SOUNDS.map((sound, index) => (
           <motion.li
             key={index}
             variants={itemVariants}
             whileHover={{ scale: 1.3 }}
             className="text-3xl cursor-pointer transition"
+            onClick={() => {
+              setCurrentSound(new Audio(sound.sound));
+            }}
           >
-            {flag}
+            {sound.icon}
           </motion.li>
         ))}
       </motion.ul>
