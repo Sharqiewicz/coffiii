@@ -27,7 +27,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link
+          rel="icon"
+          href="/icon?<generated>"
+          type="image/svg"
+          sizes="32x32"
+        />
       </head>
       <body
         className={`${allRoundGothicSemi.variable} ${allRoundGothicThick.variable} antialiased`}
