@@ -141,13 +141,13 @@ export default function Home() {
   );
 
   return (
-    <div className="relative grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
+    <div className="relative flex flex-wrap items-end justify-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <div className="absolute top-20 left-1/2 -translate-x-1/2">
           <h1 className="text-3xl">Coffiii</h1>
           <h2 className="text-xl mb-5">minimalistic cafe.fm</h2>
         </div>
-        <div>
+        <div className="w-full mt-5">
           <AnimatePresence>
             {showWelcome ? (
               <WelcomeMessage key="welcome" />
@@ -157,7 +157,7 @@ export default function Home() {
           </AnimatePresence>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
+      <footer className="w-full row-start-3 flex gap-6 flex-wrap items-center justify-center">
         Made with ❤ by Kacper Szarkiewicz
       </footer>
     </div>
