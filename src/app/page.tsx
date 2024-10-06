@@ -11,13 +11,15 @@ import Cafe1Sound from '../public/sounds/cafe-1.mp3';
 interface StopPlayingSectionProps {
   isPlaying: boolean;
   stopPlaying: () => void;
-  setCurrentSound: (sound: HTMLAudioElement) => void;
+  setCurrentSound: (sound: string) => void;
+  currentSound: string;
 }
 
 const StopPlayingSection: FC<StopPlayingSectionProps> = ({
   isPlaying,
   stopPlaying,
   setCurrentSound,
+  currentSound,
 }) => {
   const commonAnimate = isPlaying
     ? {}
@@ -33,7 +35,7 @@ const StopPlayingSection: FC<StopPlayingSectionProps> = ({
       }
     >
       <motion.div animate={commonAnimate}>
-        <List setCurrentSound={setCurrentSound} />
+        <List setCurrentSound={setCurrentSound} currentSound={currentSound} />
       </motion.div>
       <PauseButton
         animate={commonAnimate as AnimationControls}
@@ -60,7 +62,12 @@ export default function Home() {
   const [isStarted, setIsStarted] = useState(false); // todo: remove it
   const [showWelcome, setShowWelcome] = useState(true); // todo: remove it
 
-  const [currentSound, setCurrentSound] = useState(new Audio(Cafe1Sound));
+  const [currentSound, setCurrentSound] = useState<string | null>(Cafe1Sound);
+  const [audioInstance, setAudioInstance] = useState<HTMLAudioElement | null>(
+    null
+  );
+
+  console.log('currentSound', currentSound);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -70,29 +77,49 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    if (currentSound) {
-      currentSound.loop = true;
-      currentSound.play();
-    }
-  }, [currentSound]);
-
   const startPlaying = () => {
     setIsPlaying(true);
     setIsStarted(true);
-    currentSound.loop = true;
-    currentSound.play();
+    if (audioInstance) {
+      audioInstance.loop = true;
+      audioInstance.play();
+    }
   };
 
   const stopPlaying = () => {
     setIsPlaying(false);
-    currentSound.pause();
+    if (audioInstance) {
+      audioInstance.pause();
+    }
   };
 
-  const handleSetCurrentSound = (sound: HTMLAudioElement) => {
-    currentSound.pause();
+  const handleSetCurrentSound = (sound: string) => {
     setCurrentSound(sound);
   };
+
+  useEffect(() => {
+    if (currentSound) {
+      const newAudio = new Audio(currentSound);
+      setAudioInstance(newAudio);
+
+      return () => {
+        newAudio.pause();
+      };
+    }
+  }, [currentSound]);
+
+  useEffect(() => {
+    if (audioInstance) {
+      audioInstance.loop = true;
+      audioInstance.play();
+    }
+
+    return () => {
+      if (audioInstance) {
+        audioInstance.pause();
+      }
+    };
+  }, [audioInstance]);
 
   const DisplayCurrentButton = () => (
     <motion.div
@@ -107,13 +134,14 @@ export default function Home() {
           isPlaying={isPlaying}
           stopPlaying={stopPlaying}
           setCurrentSound={handleSetCurrentSound}
+          currentSound={currentSound || ''}
         />
       )}
     </motion.div>
   );
 
   return (
-    <div className="relative grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+    <div className="relative grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <div className="absolute top-20 left-1/2 -translate-x-1/2">
           <h1 className="text-3xl">Coffiii</h1>

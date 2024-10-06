@@ -41,10 +41,11 @@ const SOUNDS = [
 ];
 
 interface ListProps {
-  setCurrentSound: (sound: HTMLAudioElement) => void;
+  setCurrentSound: (sound: string) => void;
+  currentSound: string;
 }
 
-export function List({ setCurrentSound }: ListProps) {
+export function List({ setCurrentSound, currentSound }: ListProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -80,20 +81,43 @@ export function List({ setCurrentSound }: ListProps) {
         }}
         style={{ pointerEvents: isOpen ? 'auto' : 'none' }}
       >
-        {SOUNDS.map((sound, index) => (
-          <motion.li
-            key={index}
-            variants={itemVariants}
-            whileHover={{ scale: 1.3 }}
-            className="text-3xl cursor-pointer transition"
-            onClick={() => {
-              setCurrentSound(new Audio(sound.sound));
-            }}
-          >
-            {sound.icon}
-          </motion.li>
-        ))}
+        {SOUNDS.filter(({ sound }) => sound !== currentSound).map(
+          ({ sound, icon }) => (
+            <motion.li
+              key={icon}
+              variants={itemVariants}
+              whileHover={{ scale: 1.3 }}
+              className={'text-3xl  transition cursor-pointer'}
+              onClick={() => {
+                setCurrentSound(sound);
+              }}
+            >
+              {icon}
+            </motion.li>
+          )
+        )}
       </motion.ul>
+      <motion.div
+        className="bg-white text-black rounded-lg p-5 absolute transition"
+        variants={{
+          open: {
+            y: 130,
+            clipPath: 'inset(0% 0% 0% 0% round 10px)',
+          },
+          closed: {
+            y: 200,
+            clipPath: 'inset(10% 50% 90% 50% round 10px)',
+          },
+        }}
+      >
+        {SOUNDS.filter(({ sound }) => sound === currentSound).map(
+          ({ icon }) => (
+            <motion.p key={icon} className={'text-3xl transition'}>
+              {icon}
+            </motion.p>
+          )
+        )}
+      </motion.div>
     </motion.nav>
   );
 }
