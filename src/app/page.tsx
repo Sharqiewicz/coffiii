@@ -53,7 +53,7 @@ const WelcomeMessage: FC = () => (
     exit={{ opacity: 0, y: -100 }}
     transition={{ duration: 0.5 }}
   >
-    <h1 className="text-4xl font-bold">Welcome at Coffiii</h1>
+    <h1 className="text-lg md:text-4xl font-bold">Welcome at Coffiii</h1>
   </motion.div>
 );
 
@@ -66,8 +66,6 @@ export default function Home() {
   const [audioInstance, setAudioInstance] = useState<HTMLAudioElement | null>(
     null
   );
-
-  console.log('currentSound', currentSound);
 
   useEffect(() => {
     const timer = setTimeout(() => {
