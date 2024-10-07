@@ -26,28 +26,30 @@ const StopPlayingSection: FC<StopPlayingSectionProps> = ({
     : { scale: 0, transition: { duration: 0.4 } };
 
   return (
-    <motion.section
-      className="flex gap-4 flex-wrap w-max justify-center items-center"
-      animate={
-        isPlaying
-          ? { y: -100, transition: { duration: 0.8 }, scale: [0, 1] }
-          : { y: 100 }
-      }
-    >
-      <motion.div animate={commonAnimate}>
-        <List setCurrentSound={setCurrentSound} currentSound={currentSound} />
-      </motion.div>
-      <PauseButton
-        animate={commonAnimate as AnimationControls}
-        stopPlaying={stopPlaying}
-      />
-    </motion.section>
+    <AnimatePresence>
+      <motion.section
+        className="flex gap-4 flex-wrap w-full justify-center items-center"
+        animate={
+          isPlaying
+            ? { y: -100, transition: { duration: 0.5 }, scale: [0.5, 1] }
+            : { y: 50 }
+        }
+      >
+        <motion.div animate={commonAnimate}>
+          <List setCurrentSound={setCurrentSound} currentSound={currentSound} />
+        </motion.div>
+        <PauseButton
+          animate={commonAnimate as AnimationControls}
+          stopPlaying={stopPlaying}
+        />
+      </motion.section>
+    </AnimatePresence>
   );
 };
 
 const WelcomeMessage: FC = () => (
   <motion.div
-    className="flex justify-center items-center"
+    className="flex justify-center items-center w-full"
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
     exit={{ opacity: 0, y: -100 }}
@@ -121,12 +123,14 @@ export default function Home() {
 
   const DisplayCurrentButton = () => (
     <motion.div
-      className="mt-2 flex flex-col gap-8 row-start-2 items-center sm:items-start"
-      initial={{ opacity: 0, y: 100 }}
+      className="mt-2 flex w-full justify-center items-center flex-wrap"
+      initial={{ opacity: 0, y: 80 }}
       animate={{ opacity: 1, y: 20 }}
       transition={{ duration: 0.5 }}
     >
-      <PlayButton isPlaying={isPlaying} startPlaying={startPlaying} />
+      <div className="flex w-full justify-center items-center">
+        <PlayButton isPlaying={isPlaying} startPlaying={startPlaying} />
+      </div>
       {isStarted && (
         <StopPlayingSection
           isPlaying={isPlaying}
@@ -139,23 +143,20 @@ export default function Home() {
   );
 
   return (
-    <div className="relative flex flex-wrap items-end justify-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <div className="absolute top-20 left-1/2 -translate-x-1/2">
-          <h1 className="text-3xl">Coffiii</h1>
-          <h2 className="text-xl mb-5">minimalistic cafe.fm</h2>
-        </div>
-        <div className="w-full mt-5">
-          <AnimatePresence>
-            {showWelcome ? (
-              <WelcomeMessage key="welcome" />
-            ) : (
-              <DisplayCurrentButton key="button" />
-            )}
-          </AnimatePresence>
-        </div>
+    <div className="grid grid-rows-3 min-h-screen gap-16">
+      <header className="flex items-center justify-center">
+        <h1 className="text-3xl">Coffiii.</h1>
+      </header>
+      <main>
+        <AnimatePresence>
+          {showWelcome ? (
+            <WelcomeMessage key="welcome" />
+          ) : (
+            <DisplayCurrentButton key="button" />
+          )}
+        </AnimatePresence>
       </main>
-      <footer className="w-full row-start-3 flex gap-6 flex-wrap items-center justify-center">
+      <footer className="text-center my-auto">
         Made with ❤ by Kacper Szarkiewicz
       </footer>
     </div>
