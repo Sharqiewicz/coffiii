@@ -157,7 +157,14 @@ export default function Home() {
         </AnimatePresence>
       </main>
       <footer className="text-center my-auto">
-        Made with ❤ by Kacper Szarkiewicz
+        Made with ❤ by{' '}
+        <a
+          href="https://www.sharqiewicz.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Kacper Szarkiewicz
+        </a>
       </footer>
     </div>
   );
